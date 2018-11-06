@@ -2,9 +2,9 @@ LabMate.AI was designed to help identifying optimized conditions for chemical re
 
 The software is written in the Python 2.7 programming language and uses the following dependencies:
 
-- NumPy (v 1.11.3)
-- Pandas (v 0.19.2)
-- Scikit-learn (v 0.18.1)
+- NumPy (>= 1.11.3)
+- Pandas (>= 0.19.2)
+- Scikit-learn (>= 0.18.1)
 
 
 
