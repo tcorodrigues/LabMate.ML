@@ -118,7 +118,7 @@ df = pd.concat([initial_data, predictions_df, variance_df], axis=1)
 LabMate.AI now selects the next reaction to be performed.
 '''
 
-feat_imp_T = feat_imp.transpose() # creates a table with a single column stating the importance (0-1 scale) of each variable
+feat_imp_T = feat_imp.transpose() # creates a table with a single row stating the importance (0-1 scale) of each variable
 keys1 = list(feat_imp_T.keys()) # collects the names of the features
 keys2 = list(feat_imp_T.keys()) # same as above
 keys1.insert(7,'Prediction') # Inserts "Prediction" in position 7 of the previously generated list
