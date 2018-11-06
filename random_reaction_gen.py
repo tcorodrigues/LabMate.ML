@@ -4,7 +4,7 @@ import itertools
 
 
 '''
-Below create lists for your reaction parameters. Change names of lists where appropriate
+Section below creates lists for your reaction parameters. Change names of lists where appropriate
 '''
 
 #For bigger lists use np.arange(min_value, max_value, step)
