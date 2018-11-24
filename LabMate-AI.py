@@ -37,7 +37,7 @@ The possible number of estimators, max_features and max_depth is a good compromi
 '''
 
 seed = 1  
-kfold = KFold(n_splits = 10, random_state = seed)
+kfold = KFold(n_splits = 10, shuffle=True, random_state = seed)
 scoring = 'neg_mean_absolute_error'
 model = RandomForestRegressor(random_state=seed)
 estimators = np.arange(100, 1050, 50)
