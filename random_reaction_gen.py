@@ -27,7 +27,7 @@ df.to_csv('all_combos.txt', sep = '\t', header = ['Pyridine', 'Aldehyde', 'Isocy
 
 
 '''
-Below, 10 random reaction are selected from the all combinations table. The reactions are stored in a text file. Change names of header as appropriate.
+Below, 10 random reaction are selected from all possible combinations. The reactions are stored in a text file. Change names of header as appropriate.
 '''
 
 random_data = df.sample(n=10, random_state=1)
