@@ -1,6 +1,6 @@
 LabMate.AI was designed to help identifying optimized conditions for chemical reactions.
 
-The software is written in the Python 2.7 programming language and uses the following dependencies:
+The software is written in the Python 2.7 programming language and uses the following dependencies, which should be installed:
 
 - NumPy (>= 1.11.3)
 - Pandas (>= 0.19.2)
