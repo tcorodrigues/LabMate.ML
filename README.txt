@@ -1,4 +1,4 @@
-LabMate.AI was designed to help identifying optimized conditions for chemical reactions.
+LabMate.ML was designed to help identifying optimized conditions for chemical reactions.
 
 The software is written in the Python 2.7 programming language and uses the following dependencies, which should be installed:
 
@@ -12,7 +12,7 @@ The software is written in the Python 2.7 programming language and uses the foll
 
 ========================================================================================
 
-random_reaction_gen.py
+Initializer.py
 
 This script creates two text files that are required to run LabMate.AI:
 
@@ -23,7 +23,7 @@ This script creates two text files that are required to run LabMate.AI:
 The script requires minor editing and instructions are available once the script is opened with a text editor.
 To run the script, open a terminal in your destiny folder and type:
 
->>> python random_reaction_gen.py
+>>> python Initializer.py
 
 
 After performing the reactions, add a column in the end of the "train_data.txt" file mentioning the reaction yield/conversion or similar (sample file available)
@@ -33,15 +33,15 @@ After performing the reactions, add a column in the end of the "train_data.txt" 
 
 
 
-LabMate.AI.py
+Optimizer.py
 
 
 This script implements a routine to search for the next best experiment to be carried out.
 
 
-To run LabMate.AI, open a terminal and type:
+To run LabMate.ML, open a terminal and type:
 
->>> python LabMate-AI.py
+>>> python Optimizer.py
 
 in the folder where the Python script, the "train_data.txt" and the "all_combos.txt" files are located. The columns in the txt files must be tab separated.
 The grid search routine will run in 6 CPUs (n_jobs=6 as in line 56), so make sure there are enough computational resources available.
