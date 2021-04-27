@@ -1,4 +1,6 @@
-# LabMate.ML was designed to help identifying optimized conditions for chemical reactions.
+# LabMate.ML 
+
+LabMate.ML was designed to help identifying optimized conditions for chemical reactions.
 
 The environment can be built from the `environment.yml` file:
 
