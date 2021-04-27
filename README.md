@@ -5,7 +5,7 @@ LabMate.ML was designed to help identifying optimized conditions for chemical re
 The environment can be built from the `environment.yml` file:
 
 ```
-conda env create -f environment.yaml
+conda env create -f environment.yml
 ```
 
 
