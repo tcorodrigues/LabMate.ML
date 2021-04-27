@@ -11,7 +11,7 @@ conda env create -f environment.yml
 
 
 
-## Initializer.py
+## initializer.py
 
 This script creates two text files that are required to run LabMate.AI:
 
@@ -23,7 +23,7 @@ The script requires minor editing and instructions are available once the script
 To run the script, open a terminal in your destiny folder and type:
 
 ```
-python Initializer.py
+python initializer.py
 ```
 
 After performing the reactions, add a column in the end of the `train_data.txt` file mentioning the reaction yield/conversion or similar (sample file available)
