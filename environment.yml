@@ -1,0 +1,11 @@
+name: LabMateML
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - numpy=1.18.1
+  - pandas=1.0.3
+  - scikit-learn=0.22.1
+  - pip:
+    - ax-platform==0.1.11
