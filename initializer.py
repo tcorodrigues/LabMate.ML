@@ -1,7 +1,11 @@
 import numpy as np
 import pandas as pd
 import itertools
+import os
 
+init_files_dir = r'./init_files'
+if not os.path.exists(init_files_dir):
+    os.makedirs(init_files_dir)
 
 '''
 Section below creates lists for your reaction parameters. Change names of lists where appropriate
@@ -23,7 +27,7 @@ The following lines create all combos possible for the values listed above and s
 '''
 combinations = list(itertools.product(Pyridine, Aldehyde, Isocyanide, Temperature, Solvent, Catalyst, Time))
 df = pd.DataFrame(combinations)
-df.to_csv('all_combos.txt', sep = '\t', header = ['Pyridine', 'Aldehyde', 'Isocyanide', 'Temperature', 'Solvent', 'Catalyst', 'Time'])
+df.to_csv(os.path.join(init_files_dir,'all_combos.txt'), sep = '\t', header = ['Pyridine', 'Aldehyde', 'Isocyanide', 'Temperature', 'Solvent', 'Catalyst', 'Time'])
 
 
 '''
@@ -32,4 +36,4 @@ Below, 10 random reaction are selected from all possible combinations. The react
 
 random_data = df.sample(n=10, random_state=1)
 df_random_data = pd.DataFrame(random_data)
-df_random_data.to_csv('train_data.txt', sep= '\t', header = ['Pyridine', 'Aldehyde', 'Isocyanide', 'Temperature', 'Solvent', 'Catalyst', 'Time'])
+df_random_data.to_csv(os.path.join(init_files_dir, 'train_data.txt'), sep= '\t', header = ['Pyridine', 'Aldehyde', 'Isocyanide', 'Temperature', 'Solvent', 'Catalyst', 'Time'])
