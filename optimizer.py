@@ -9,8 +9,9 @@ import pandas as pd
 from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
-from sklearn.externals.joblib import dump
-
+from joblib import dump
+import os
+import initializer
 
 print('Welcome! Let me work out what is the best experiment for you to run...')
 
@@ -21,13 +22,10 @@ See example files
 '''
 
 filename = 'train_data.txt'
-train = pd.read_csv(filename, sep= '\t')
+train = pd.read_csv(os.path.join(initializer.init_files_dir, filename), sep= '\t')
 array = train.values
 X = array[:,1:-1] 
 Y = array[:,-1] 
-
-
-
 
 
 '''
@@ -68,7 +66,7 @@ The file has the same format as the training data, but no "Target" column. Pleas
 '''
 
 filename2 = 'all_combos.txt'
-df_all_combos = pd.read_csv(filename2, sep= '\t')
+df_all_combos = pd.read_csv(os.path.join(initializer.init_files_dir, filename2), sep= '\t')
 df_train_corrected = train.iloc[:,:-1]
 unseen = pd.concat([df_all_combos, df_train_corrected]).drop_duplicates(keep=False)
 array2 = unseen.values
@@ -139,12 +137,15 @@ toPerform = df_sorted2.iloc[0] # First row is the selected reaction
 Save files
 '''
 
-feat_imp.to_csv('feature_importances.txt', sep= '\t') 
-best_params.to_csv('best_parameters.txt', sep= '\t')
-toPerform.to_csv('selected_reaction.txt', sep = '\t')
-df_sorted.to_csv('predictions.txt', sep = '\t')
-filename3 = 'random_forest_model_grid.sav'
-dump(grid, filename3)
+if not os.path.exsits('output_files'):
+    os.makedirs('output_files')
+
+feat_imp.to_csv('output_files/feature_importances.txt', sep= '\t') 
+best_params.to_csv('output_files/best_parameters.txt', sep= '\t')
+toPerform.to_csv('output_files/selected_reaction.txt', sep = '\t')
+df_sorted.to_csv('output_files/predictions.txt', sep = '\t')
+filename3 = 'output_files/random_forest_model_grid.sav'
+dump(grid, os.path.join('output_files',filename3))
 
 print('You are all set! Have a good one, mate!')
   
