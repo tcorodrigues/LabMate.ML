@@ -29,7 +29,7 @@ python initializer.py
 After performing the reactions, add a column in the end of the `train_data.txt` file mentioning the reaction yield/conversion or similar (sample file available)
 
 
-## Optimizer.py
+## optimizer.py
 
 
 This script implements a routine to search for the next best experiment to be carried out.
@@ -38,7 +38,7 @@ This script implements a routine to search for the next best experiment to be ca
 To run LabMate.ML, open a terminal and type:
 
 ```
-python Optimizer.py
+python optimizer.py
 ```
 
 in the folder where the Python script, the `train_data.txt` and the `all_combos.txt` files are located. The columns in the txt files must be tab separated.
