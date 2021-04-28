@@ -8,7 +8,11 @@ The environment can be built from the `environment.yml` file:
 conda env create -f environment.yml
 ```
 
+You are able to enter the environment by:
 
+```
+conda activate LabMateML
+```
 
 
 ## initializer.py
