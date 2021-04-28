@@ -11,3 +11,4 @@ dependencies:
   - pip:
     - ax-platform==0.1.11
     - joblib
+    - IPython
