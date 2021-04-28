@@ -2,3 +2,5 @@ init_files/
 __pycache__/
 output_files/
 manuscript/output_files/
+*.ipynb
+*.ipynb_checkpoints
