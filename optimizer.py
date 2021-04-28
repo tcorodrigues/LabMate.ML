@@ -13,6 +13,10 @@ from joblib import dump
 import os
 import initializer
 
+if not os.path.exists('output_files'):
+    os.makedirs('output_files')
+
+
 print('Welcome! Let me work out what is the best experiment for you to run...')
 
 
@@ -53,7 +57,7 @@ It will also save a file with the best score and store the ideal hyperparameters
 
 grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=scoring, cv=kfold, n_jobs=6)
 grid_result = grid.fit(X, Y)
-np.savetxt('best_score.txt', ["best_score: %s" % grid.best_score_], fmt ='%s')
+np.savetxt(os.path.join('output_files','best_score.txt'), ["best_score: %s" % grid.best_score_], fmt ='%s')
 best_params = pd.DataFrame([grid.best_params_], columns=grid.best_params_.keys())
 
 
@@ -70,7 +74,7 @@ df_all_combos = pd.read_csv(os.path.join(initializer.init_files_dir, filename2),
 df_train_corrected = train.iloc[:,:-1]
 unseen = pd.concat([df_all_combos, df_train_corrected]).drop_duplicates(keep=False)
 array2 = unseen.values
-X2 = array2[:,1:]
+X2 = array2[:,1:-1]
 df_all_combos2 = df_all_combos.iloc[:,1:]
 
 
@@ -86,7 +90,7 @@ model2 = RandomForestRegressor(n_estimators = grid.best_params_['n_estimators'],
 RF_fit = model2.fit(X, Y)
 predictions = model2.predict(X2)
 predictions_df = pd.DataFrame(data=predictions, columns=['Prediction'])
-feat_imp = pd.DataFrame(model2.feature_importances_, index=list(df_all_combos2.columns.values), columns=['Feature_importances'])
+feat_imp = pd.DataFrame(model2.feature_importances_, index=list(df_all_combos2.columns.values)[:-1], columns=['Feature_importances'])
 feat_imp = feat_imp.sort_values(by=['Feature_importances'], ascending = False)
 
 
@@ -137,15 +141,13 @@ toPerform = df_sorted2.iloc[0] # First row is the selected reaction
 Save files
 '''
 
-if not os.path.exsits('output_files'):
-    os.makedirs('output_files')
 
 feat_imp.to_csv('output_files/feature_importances.txt', sep= '\t') 
 best_params.to_csv('output_files/best_parameters.txt', sep= '\t')
 toPerform.to_csv('output_files/selected_reaction.txt', sep = '\t')
 df_sorted.to_csv('output_files/predictions.txt', sep = '\t')
 filename3 = 'output_files/random_forest_model_grid.sav'
-dump(grid, os.path.join('output_files',filename3))
+dump(grid, os.path.join(filename3))
 
 print('You are all set! Have a good one, mate!')
   
