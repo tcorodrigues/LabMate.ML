@@ -28,17 +28,17 @@ See example files
 filename = 'train_data.txt'
 train = pd.read_csv(os.path.join(initializer.init_files_dir, filename), sep= '\t')
 array = train.values
-X = array[:,1:-1] 
-Y = array[:,-1] 
+X = array[:,1:-1]
+Y = array[:,-1]
 
 
 '''
 General settings below. These do not need to be changed.
 The seed value is what makes the whole process deterministic. You may choose to change this number.
-The possible number of estimators, max_features and max_depth is a good compromise, but may need to be adapted, if the number of features (columns) is very different. 
+The possible number of estimators, max_features and max_depth is a good compromise, but may need to be adapted, if the number of features (columns) is very different.
 '''
 
-seed = 1  
+seed = 1
 kfold = KFold(n_splits = 10, shuffle=True, random_state = seed)
 scoring = 'neg_mean_absolute_error'
 model = RandomForestRegressor(random_state=seed)
@@ -74,7 +74,7 @@ df_all_combos = pd.read_csv(os.path.join(initializer.init_files_dir, filename2),
 df_train_corrected = train.iloc[:,:-1]
 unseen = pd.concat([df_all_combos, df_train_corrected]).drop_duplicates(keep=False)
 array2 = unseen.values
-X2 = array2[:,1:-1]
+X2 = array2[:,1:]
 df_all_combos2 = df_all_combos.iloc[:,1:]
 
 
@@ -90,7 +90,7 @@ model2 = RandomForestRegressor(n_estimators = grid.best_params_['n_estimators'],
 RF_fit = model2.fit(X, Y)
 predictions = model2.predict(X2)
 predictions_df = pd.DataFrame(data=predictions, columns=['Prediction'])
-feat_imp = pd.DataFrame(model2.feature_importances_, index=list(df_all_combos2.columns.values)[:-1], columns=['Feature_importances'])
+feat_imp = pd.DataFrame(model2.feature_importances_, index=list(df_all_combos2.columns.values), columns=['Feature_importances'])
 feat_imp = feat_imp.sort_values(by=['Feature_importances'], ascending = False)
 
 
@@ -98,7 +98,7 @@ feat_imp = feat_imp.sort_values(by=['Feature_importances'], ascending = False)
 
 
 '''
-LabMate.AI calculates variances for the predictions, which allows prioritizing the next best experiment, and creates a table with all the generated information. 
+LabMate.AI calculates variances for the predictions, which allows prioritizing the next best experiment, and creates a table with all the generated information.
 '''
 
 all_predictions = []
@@ -132,7 +132,7 @@ df_sorted2 = preliminary.sort_values(by=[keys2[-1], keys2[0]], ascending=[True, 
 toPerform = df_sorted2.iloc[0] # First row is the selected reaction
 
 
-	
+
 
 
 
@@ -142,7 +142,7 @@ Save files
 '''
 
 
-feat_imp.to_csv('output_files/feature_importances.txt', sep= '\t') 
+feat_imp.to_csv('output_files/feature_importances.txt', sep= '\t')
 best_params.to_csv('output_files/best_parameters.txt', sep= '\t')
 toPerform.to_csv('output_files/selected_reaction.txt', sep = '\t')
 df_sorted.to_csv('output_files/predictions.txt', sep = '\t')
@@ -150,11 +150,11 @@ filename3 = 'output_files/random_forest_model_grid.sav'
 dump(grid, os.path.join(filename3))
 
 print('You are all set! Have a good one, mate!')
-  
-  
-  
-                
+
+
+
+
 '''
 After performing the reaction simply edit the train_data.txt file with the reaction conditions used and target value, before running the script again. Enjoy and happy chemistry :)
-'''    
+'''
 

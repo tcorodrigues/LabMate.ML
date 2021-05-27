@@ -16,11 +16,11 @@ if not os.path.exists('output_files'):
 filename = 'train_data.txt'
 train = pd.read_csv(os.path.join(init_files_dir, filename), sep= '\t')
 array = train.values
-X = array[:,1:-1] 
-Y = array[:,-1] 
+X = array[:,1:-1]
+Y = array[:,-1]
 
 #General stuff
-seed = 1234  
+seed = 1234
 kfold = KFold(n_splits = 10, shuffle=True, random_state=seed)
 scoring = 'neg_mean_absolute_error'
 model = RandomForestRegressor(random_state=seed)
@@ -44,13 +44,13 @@ df_all_combos = pd.read_csv(os.path.join(init_files_dir, filename2), sep= '\t')
 df_train_corrected = train.iloc[:,:-1]
 unseen = pd.concat([df_all_combos, df_train_corrected]).drop_duplicates(keep=False)
 array2 = unseen.values
-X2 = array2[:,1:-1]
+X2 = array2[:,1:]
 
 model2 = RandomForestRegressor(n_estimators = grid.best_params_['n_estimators'], max_features = grid.best_params_['max_features'], max_depth = grid.best_params_['max_depth'], random_state = seed)
 RF_fit = model2.fit(X, Y)
 predictions = model2.predict(X2)
 predictions_df = pd.DataFrame(data=predictions, columns=['Prediction'])
-feat_imp = pd.DataFrame(model2.feature_importances_, index=['Pyridine', 'Aldehyde', 'Isocyanide', 'Temperature', 'Solvent', 'Catalyst'], columns=['Feature_importances'])
+feat_imp = pd.DataFrame(model2.feature_importances_, index=['Pyridine', 'Aldehyde', 'Isocyanide', 'Temperature', 'Solvent', 'Catalyst', 'Time'], columns=['Feature_importances'])
 
 #get individual tree preds
 all_predictions = []
@@ -70,7 +70,7 @@ df = pd.concat([initial_data, predictions_df, variance_df], axis=1)
 if len(Y) < 19:
 	df_sorted = df.sort_values(by=['Variance', 'Catalyst'], ascending=[False, True])
 	toPerform = df_sorted.iloc[0]
-	
+
 elif len(Y) >= 19 and np.max(Y[10:]) >= 4 * np.max(Y[:9]):
 	df_sorted = df.sort_values(by=['Prediction', 'Catalyst'], ascending=[False, True])
 	preliminary = df_sorted.iloc[0:5]
@@ -82,9 +82,9 @@ else:
 	preliminary = df_sorted.iloc[0:10]
 	df_sorted2 = preliminary.sort_values(by=['Variance', 'Catalyst'], ascending=[False, True])
 	toPerform = df_sorted2.iloc[0]
-	
+
 #save data
-feat_imp.to_csv(os.path.join('output_files', 'feature_importances.txt'), sep= '\t') 
+feat_imp.to_csv(os.path.join('output_files', 'feature_importances.txt'), sep= '\t')
 best_params.to_csv(os.path.join('output_files', 'best_parameters.txt'), sep= '\t')
 toPerform.to_csv(os.path.join('output_files', 'selected_reaction.txt'), sep = '\t')
 df_sorted.to_csv(os.path.join('output_files', 'predictions.txt'), sep = '\t')
@@ -92,6 +92,6 @@ filename3 = os.path.join('output_files', 'random_forest_model_grid.sav')
 dump(grid, filename3)
 
 print('Have a good one, mate!')
-                
-                
+
+
 
