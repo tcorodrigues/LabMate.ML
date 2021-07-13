@@ -91,9 +91,7 @@ It builds the model using the best hyperparameter set and predicts the reaction 
 For your reference, the method creates a file with the feature importances
 '''
 
-model2 = RandomForestRegressor(n_estimators=grid.best_params_['n_estimators'],
-                               max_features=grid.best_params_['max_features'], max_depth=grid.best_params_['max_depth'],
-                               random_state=seed)
+model2 = grid.best_estimator_  # extracts best estimator (equivalent to setting params), seed is conserved.
 RF_fit = model2.fit(X, Y)
 predictions = model2.predict(X2)
 predictions_df = pd.DataFrame(data=predictions, columns=['Prediction'])
