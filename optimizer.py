@@ -20,6 +20,7 @@ parser.add_argument('-o', '--out_dir', type=str, action='store', default='output
 parser.add_argument('-t', '--train_file', type=str, action='store', default='train_data.txt', help='Training data.')
 parser.add_argument('-i', '--init_dir', type=str, action='store', default=r'./init_files', help='dir to load files from.')
 parser.add_argument('-s', '--seed', type=int, action='store', default=1, help='Random seed value.')
+parser.add_argument('-m', '--metric', type=str, action='store', default='neg_mean_absolute_error', help='Metric for evaluatng hyperparameters.')
 args = parser.parse_args()
 
 
@@ -52,7 +53,6 @@ if the number of features (columns) is very different.
 
 seed = args.seed
 kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
-scoring = 'neg_mean_absolute_error'
 model = RandomForestRegressor(random_state=seed)
 estimators_int = list(range(100, 1050, 50))
 param_grid = {'n_estimators': estimators_int, 'max_features': ('auto', 'sqrt'), 'max_depth': [None, 2, 4]}
@@ -64,7 +64,7 @@ This section makes LabMate.AI search for the best hyperparameters autonomously.
 It will also save a file with the best score and store the ideal hyperparameters for future use.
 '''
 
-grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=scoring, cv=kfold, n_jobs=6)
+grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=args.metric, cv=kfold, n_jobs=6)
 grid_result = grid.fit(X, Y)
 np.savetxt(os.path.join(output_dir, 'best_score.txt'), ["best_score: %s" % grid.best_score_], fmt='%s')
 best_params = pd.DataFrame([grid.best_params_], columns=grid.best_params_.keys())
