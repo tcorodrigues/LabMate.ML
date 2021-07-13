@@ -1,8 +1,11 @@
-'''
+"""
 Please read the license file.
 LabMate.AI was designed to help identifying optimized conditions for chemical reactions.
 You will need the Python libraries below (NumPy, Pandas and Scikit-learn) and 10 random reactions to run LabMate.AI.
-'''
+"""
+
+import os
+import argparse
 
 import numpy as np
 import pandas as pd
@@ -10,11 +13,18 @@ from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
 from joblib import dump
-import os
+
 import initializer
 
-if not os.path.exists('output_files'):
-    os.makedirs('output_files')
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-o', '--out_dir', type=str, action='store', default='output_files', help='dir to save files to.')
+args = parser.parse_args()
+
+
+output_dir = args.out_dir
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
 
 print('Welcome! Let me work out what is the best experiment for you to run...')
 
@@ -51,7 +61,7 @@ It will also save a file with the best score and store the ideal hyperparameters
 
 grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=scoring, cv=kfold, n_jobs=6)
 grid_result = grid.fit(X, Y)
-np.savetxt(os.path.join('output_files', 'best_score.txt'), ["best_score: %s" % grid.best_score_], fmt='%s')
+np.savetxt(os.path.join(output_dir, 'best_score.txt'), ["best_score: %s" % grid.best_score_], fmt='%s')
 best_params = pd.DataFrame([grid.best_params_], columns=grid.best_params_.keys())
 
 print('... done! It is going to be lightspeed from here on out! :)')
@@ -116,11 +126,11 @@ toPerform = df_sorted2.iloc[0]  # First row is the selected reaction
 Save files
 '''
 
-feat_imp.to_csv('output_files/feature_importances.txt', sep='\t')
-best_params.to_csv('output_files/best_parameters.txt', sep='\t')
-toPerform.to_csv('output_files/selected_reaction.txt', sep='\t')
-df_sorted.to_csv('output_files/predictions.txt', sep='\t')
-filename3 = 'output_files/random_forest_model_grid.sav'
+feat_imp.to_csv(os.path.join(output_dir, 'feature_importances.txt'), sep='\t')
+best_params.to_csv(os.path.join(output_dir, 'best_parameters.txt'), sep='\t')
+toPerform.to_csv(os.path.join(output_dir, 'selected_reaction.txt'), sep='\t')
+df_sorted.to_csv(os.path.join(output_dir, 'predictions.txt'), sep='\t')
+filename3 = os.path.join(output_dir, 'random_forest_model_grid.sav')
 dump(grid, os.path.join(filename3))
 
 print('You are all set! Have a good one, mate!')
