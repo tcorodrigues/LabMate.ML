@@ -19,6 +19,7 @@ import initializer
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--out_dir', type=str, action='store', default='output_files', help='dir to save files to.')
+parser.add_argument('-t', '--train_file', type=str, action='store', default='train_data.txt', help='Training data.')
 args = parser.parse_args()
 
 
@@ -29,12 +30,11 @@ if not os.path.exists(output_dir):
 print('Welcome! Let me work out what is the best experiment for you to run...')
 
 '''
-The training data should be a tab separated file named 'train_data.txt'. The first column of the file is the reaction identifier and the last column is the objective variable (target). The columns in between correspond to descriptors. Otherwise please change accordingly.
+The training data should be a tab separated file named. The first column of the file is the reaction identifier and the last column is the objective variable (target). The columns in between correspond to descriptors. Otherwise please change accordingly.
 See example files
 '''
 
-filename = 'train_data.txt'
-train = pd.read_csv(os.path.join(initializer.init_files_dir, filename), sep='\t')
+train = pd.read_csv(os.path.join(initializer.init_files_dir, args.train_file), sep='\t')
 array = train.values
 X = array[:, 1:-1]
 Y = array[:, -1]
@@ -136,5 +136,5 @@ dump(grid, os.path.join(filename3))
 print('You are all set! Have a good one, mate!')
 
 '''
-After performing the reaction simply edit the train_data.txt file with the reaction conditions used and target value, before running the script again. Enjoy and happy chemistry :)
+After performing the reaction simply edit the training data file with the reaction conditions used and target value, before running the script again. Enjoy and happy chemistry :)
 '''
