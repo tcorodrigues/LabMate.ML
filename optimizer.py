@@ -14,12 +14,11 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
 from joblib import dump
 
-import initializer
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--out_dir', type=str, action='store', default='output_files', help='dir to save files to.')
 parser.add_argument('-t', '--train_file', type=str, action='store', default='train_data.txt', help='Training data.')
+parser.add_argument('-i', '--init_dir', type=str, action='store', default=r'./init_files', help='dir to load files from.')
 args = parser.parse_args()
 
 
@@ -37,7 +36,7 @@ Otherwise please change accordingly.
 See example files
 '''
 
-train = pd.read_csv(os.path.join(initializer.init_files_dir, args.train_file), sep='\t')
+train = pd.read_csv(os.path.join(args.init_dir, args.train_file), sep='\t')
 array = train.values
 X = array[:, 1:-1]
 Y = array[:, -1]
@@ -78,7 +77,7 @@ Please check example file.
 '''
 
 filename2 = 'all_combos.txt'
-df_all_combos = pd.read_csv(os.path.join(initializer.init_files_dir, filename2), sep='\t')
+df_all_combos = pd.read_csv(os.path.join(args.init_dir, filename2), sep='\t')
 df_train_corrected = train.iloc[:, :-1]
 unseen = pd.concat([df_all_combos, df_train_corrected]).drop_duplicates(keep=False)
 array2 = unseen.values
