@@ -17,6 +17,8 @@ parser.add_argument('-n', '--n_samples', type=int, action='store', default=10,
                     help='Number conditions to sample.')
 args = parser.parse_args()
 
+if args.n_samples < 10:
+    raise ValueError('At least 10 initial samples are required in order for LabMate.ML to run.')
 
 init_files_dir = args.init_dir
 if not os.path.exists(init_files_dir):
