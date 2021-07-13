@@ -19,6 +19,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-o', '--out_dir', type=str, action='store', default='output_files', help='dir to save files to.')
 parser.add_argument('-t', '--train_file', type=str, action='store', default='train_data.txt', help='Training data.')
 parser.add_argument('-i', '--init_dir', type=str, action='store', default=r'./init_files', help='dir to load files from.')
+parser.add_argument('-s', '--seed', type=int, action='store', default=1, help='Random seed value.')
 args = parser.parse_args()
 
 
@@ -49,7 +50,7 @@ The possible number of estimators, max_features and max_depth is a good compromi
 if the number of features (columns) is very different.
 '''
 
-seed = 1
+seed = args.seed
 kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
 scoring = 'neg_mean_absolute_error'
 model = RandomForestRegressor(random_state=seed)
