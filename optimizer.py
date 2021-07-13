@@ -30,7 +30,10 @@ if not os.path.exists(output_dir):
 print('Welcome! Let me work out what is the best experiment for you to run...')
 
 '''
-The training data should be a tab separated file named. The first column of the file is the reaction identifier and the last column is the objective variable (target). The columns in between correspond to descriptors. Otherwise please change accordingly.
+The training data should be a tab separated file named. 
+The first column of the file is the reaction identifier and the last column is the objective variable (target). 
+The columns in between correspond to descriptors. 
+Otherwise please change accordingly.
 See example files
 '''
 
@@ -41,8 +44,10 @@ Y = array[:, -1]
 
 '''
 General settings below. These do not need to be changed.
-The seed value is what makes the whole process deterministic. You may choose to change this number.
-The possible number of estimators, max_features and max_depth is a good compromise, but may need to be adapted, if the number of features (columns) is very different.
+The seed value is what makes the whole process deterministic. 
+You may choose to change this number.
+The possible number of estimators, max_features and max_depth is a good compromise, but may need to be adapted, 
+if the number of features (columns) is very different.
 '''
 
 seed = 1
@@ -68,7 +73,8 @@ print('... done! It is going to be lightspeed from here on out! :)')
 
 '''
 This section loads all possible reactions (search space) and deletes all previously executed reactions from that file.
-The file has the same format as the training data, but no "Target" column. Please check example file.
+The file has the same format as the training data, but no "Target" column. 
+Please check example file.
 '''
 
 filename2 = 'all_combos.txt'
@@ -80,7 +86,8 @@ X2 = array2[:, 1:]
 df_all_combos2 = df_all_combos.iloc[:, 1:]
 
 '''
-LabMate.AI predicts the future in this section. It builds the model using the best hyperparameter set and predicts the reaction yield (numeric value) for each instance.
+LabMate.AI predicts the future in this section. 
+It builds the model using the best hyperparameter set and predicts the reaction yield (numeric value) for each instance.
 For your reference, the method creates a file with the feature importances
 '''
 
@@ -95,7 +102,8 @@ feat_imp = pd.DataFrame(model2.feature_importances_, index=list(df_all_combos2.c
 feat_imp = feat_imp.sort_values(by=['Feature_importances'], ascending=False)
 
 '''
-LabMate.AI calculates variances for the predictions, which allows prioritizing the next best experiment, and creates a table with all the generated information.
+LabMate.AI calculates variances for the predictions, which allows prioritizing the next best experiment, and 
+creates a table with all the generated information.
 '''
 
 variance = np.var([e.predict(X2) for e in model2.estimators_], axis=0)
@@ -136,5 +144,6 @@ dump(grid, os.path.join(filename3))
 print('You are all set! Have a good one, mate!')
 
 '''
-After performing the reaction simply edit the training data file with the reaction conditions used and target value, before running the script again. Enjoy and happy chemistry :)
+After performing the reaction simply edit the training data file with the reaction conditions used and target value, 
+before running the script again. Enjoy and happy chemistry :)
 '''
