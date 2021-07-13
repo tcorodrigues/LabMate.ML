@@ -39,8 +39,7 @@ seed = 1
 kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
 scoring = 'neg_mean_absolute_error'
 model = RandomForestRegressor(random_state=seed)
-estimators = np.arange(100, 1050, 50)
-estimators_int = np.ndarray.tolist(estimators)
+estimators_int = list(range(100, 1050, 50))
 param_grid = {'n_estimators': estimators_int, 'max_features': ('auto', 'sqrt'), 'max_depth': [None, 2, 4]}
 
 print('All good till now. I am figuring out the best method to analyze your data. Bear with me...')
@@ -89,11 +88,7 @@ feat_imp = feat_imp.sort_values(by=['Feature_importances'], ascending=False)
 LabMate.AI calculates variances for the predictions, which allows prioritizing the next best experiment, and creates a table with all the generated information.
 '''
 
-all_predictions = []
-for e in model2.estimators_:
-    all_predictions += [e.predict(X2)]
-
-variance = np.var(all_predictions, axis=0)
+variance = np.var([e.predict(X2) for e in model2.estimators_], axis=0)
 variance_df = pd.DataFrame(data=variance, columns=['Variance'])
 
 assert len(variance) == len(predictions)  # control line
