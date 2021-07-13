@@ -22,6 +22,7 @@ parser.add_argument('-i', '--init_dir', type=str, action='store', default=r'./in
 parser.add_argument('-s', '--seed', type=int, action='store', default=1, help='Random seed value.')
 parser.add_argument('-m', '--metric', type=str, action='store', default='neg_mean_absolute_error', help='Metric for evaluatng hyperparameters.')
 parser.add_argument('-c', '--combos_file', type=str, action='store', default='all_combos.txt', help='File containing all reaction combinations.')
+parser.add_argument('-j', '--jobs', type=int, action='store', default=6, help='Number of parallel jobs when optimising hyperparameters.')
 args = parser.parse_args()
 
 
@@ -65,7 +66,7 @@ This section makes LabMate.AI search for the best hyperparameters autonomously.
 It will also save a file with the best score and store the ideal hyperparameters for future use.
 '''
 
-grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=args.metric, cv=kfold, n_jobs=6)
+grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=args.metric, cv=kfold, n_jobs=args.jobs)
 grid_result = grid.fit(X, Y)
 np.savetxt(os.path.join(output_dir, 'best_score.txt'), ["best_score: %s" % grid.best_score_], fmt='%s')
 best_params = pd.DataFrame([grid.best_params_], columns=grid.best_params_.keys())
