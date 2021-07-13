@@ -114,17 +114,11 @@ The columns in the txt files must be tab separated.
 
 
 ### Output files:
-#### `best_score.txt` 
-- saves the negative mean absolute error value (lower absolute value is better)
-#### `feature_importances.txt` 
-- importance (given in the range of 0-1) for each descriptor, according to the random forest algorithm
-#### `selected_reaction.txt` 
-- this is the next best experiment, as suggested by LabMate.AI
-#### `predictions.txt` 
-- predictions for all possible reactions
-#### `random_forest_model_grid.sav` 
-- saves the model
-
+- `best_score.txt` : saves the negative mean absolute error value (lower absolute value is better)
+- `feature_importances.txt` : importance (given in the range of 0-1) for each descriptor, according to the random forest algorithm
+- `selected_reaction.txt` : this is the next best experiment, as suggested by LabMate.AI
+- `predictions.txt` : predictions for all possible reactions
+- `random_forest_model_grid.sav` : saves the model
 ___
 
 
