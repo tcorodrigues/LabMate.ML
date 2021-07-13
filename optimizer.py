@@ -21,6 +21,7 @@ parser.add_argument('-t', '--train_file', type=str, action='store', default='tra
 parser.add_argument('-i', '--init_dir', type=str, action='store', default=r'./init_files', help='dir to load files from.')
 parser.add_argument('-s', '--seed', type=int, action='store', default=1, help='Random seed value.')
 parser.add_argument('-m', '--metric', type=str, action='store', default='neg_mean_absolute_error', help='Metric for evaluatng hyperparameters.')
+parser.add_argument('-c', '--combos_file', type=str, action='store', default='all_combos.txt', help='File containing all reaction combinations.')
 args = parser.parse_args()
 
 
@@ -77,8 +78,7 @@ The file has the same format as the training data, but no "Target" column.
 Please check example file.
 '''
 
-filename2 = 'all_combos.txt'
-df_all_combos = pd.read_csv(os.path.join(args.init_dir, filename2), sep='\t')
+df_all_combos = pd.read_csv(os.path.join(args.init_dir, args.combos_file), sep='\t')
 df_train_corrected = train.iloc[:, :-1]
 unseen = pd.concat([df_all_combos, df_train_corrected]).drop_duplicates(keep=False)
 array2 = unseen.values
