@@ -2,8 +2,10 @@ import numpy as np
 import pandas as pd
 import itertools
 import os
+import paths
 
-init_files_dir = r'./init_files'
+
+init_files_dir = paths.init_files_dir
 if not os.path.exists(init_files_dir):
     os.makedirs(init_files_dir)
 

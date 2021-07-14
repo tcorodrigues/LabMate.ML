@@ -11,7 +11,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GridSearchCV
 from joblib import dump
 import os
-import initializer
+import paths
 
 if not os.path.exists('output_files'):
     os.makedirs('output_files')
@@ -26,7 +26,7 @@ See example files
 '''
 
 filename = 'train_data.txt'
-train = pd.read_csv(os.path.join(initializer.init_files_dir, filename), sep= '\t')
+train = pd.read_csv(os.path.join(paths.init_files_dir, filename), sep= '\t')
 array = train.values
 X = array[:,1:-1]
 Y = array[:,-1]
@@ -70,13 +70,11 @@ The file has the same format as the training data, but no "Target" column. Pleas
 '''
 
 filename2 = 'all_combos.txt'
-df_all_combos = pd.read_csv(os.path.join(initializer.init_files_dir, filename2), sep= '\t')
-df_train_corrected = train.iloc[:,:-1]
-unseen = pd.concat([df_all_combos, df_train_corrected]).drop_duplicates(keep=False)
+df_all_combos = pd.read_csv(os.path.join(paths.init_files_dir, filename2), sep= '\t')
+unseen = pd.concat([df_all_combos, train.iloc[:, :-1]]).drop_duplicates(keep=False)
 array2 = unseen.values
 X2 = array2[:,1:]
 df_all_combos2 = df_all_combos.iloc[:,1:]
-
 
 
 
@@ -92,7 +90,6 @@ predictions = model2.predict(X2)
 predictions_df = pd.DataFrame(data=predictions, columns=['Prediction'])
 feat_imp = pd.DataFrame(model2.feature_importances_, index=list(df_all_combos2.columns.values), columns=['Feature_importances'])
 feat_imp = feat_imp.sort_values(by=['Feature_importances'], ascending = False)
-
 
 
 
@@ -158,3 +155,4 @@ print('You are all set! Have a good one, mate!')
 After performing the reaction simply edit the train_data.txt file with the reaction conditions used and target value, before running the script again. Enjoy and happy chemistry :)
 '''
 
+import IPython; IPython.embed(); exit(1)
