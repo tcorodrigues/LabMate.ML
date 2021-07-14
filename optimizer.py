@@ -26,9 +26,9 @@ See example files
 '''
 
 filename = 'train_data.txt'
-train = pd.read_csv(os.path.join(paths.init_files_dir, filename), sep= '\t')
+train = pd.read_csv(os.path.join(paths.init_files_dir, filename), sep= ',')
 array = train.values
-X = array[:,1:-1]
+X = array[:,:-1]
 Y = array[:,-1]
 
 
@@ -70,12 +70,9 @@ The file has the same format as the training data, but no "Target" column. Pleas
 '''
 
 filename2 = 'all_combos.txt'
-df_all_combos = pd.read_csv(os.path.join(paths.init_files_dir, filename2), sep= '\t')
+df_all_combos = pd.read_csv(os.path.join(paths.init_files_dir, filename2), sep= ',')
 unseen = pd.concat([df_all_combos, train.iloc[:, :-1]]).drop_duplicates(keep=False)
-array2 = unseen.values
-X2 = array2[:,1:]
-df_all_combos2 = df_all_combos.iloc[:,1:]
-
+X2 = unseen.values
 
 
 
@@ -88,9 +85,8 @@ model2 = RandomForestRegressor(n_estimators = grid.best_params_['n_estimators'],
 RF_fit = model2.fit(X, Y)
 predictions = model2.predict(X2)
 predictions_df = pd.DataFrame(data=predictions, columns=['Prediction'])
-feat_imp = pd.DataFrame(model2.feature_importances_, index=list(df_all_combos2.columns.values), columns=['Feature_importances'])
+feat_imp = pd.DataFrame(model2.feature_importances_, index=list(df_all_combos.columns.values), columns=['Feature_importances'])
 feat_imp = feat_imp.sort_values(by=['Feature_importances'], ascending = False)
-
 
 
 
@@ -106,7 +102,7 @@ variance = np.var(all_predictions, axis=0)
 variance_df = pd.DataFrame(data=variance, columns=['Variance'])
 
 assert len(variance) == len(predictions) # control line
-initial_data = pd.DataFrame(data=array2, columns = list(unseen.columns.values))
+initial_data = pd.DataFrame(data=X2, columns = list(unseen.columns.values))
 df = pd.concat([initial_data, predictions_df, variance_df], axis=1)
 
 
@@ -123,11 +119,10 @@ keys2 = list(feat_imp_T.keys()) # same as above
 keys1.insert(7,'Prediction') # Inserts "Prediction" in position 7 of the previously generated list
 keys2.insert(7, 'Variance') # Inserts "Variance" in position 7 of the previously generated list
 
-df_sorted = df.sort_values(by=[keys1[-1], keys1[0]], ascending=[False, False]) # Fetches the table with the predictions and variance and sorts: 1) high prediction first; 2) most important feature second (descending order) for overlapping predictions
+df_sorted = df.sort_values(by=[keys2[-1], keys1[0]], ascending=[False, False]) # Fetches the table with the predictions and variance and sorts: 1) high prediction first; 2) most important feature second (descending order) for overlapping predictions
 preliminary = df_sorted.iloc[0:5] # Collects the first five columns
 df_sorted2 = preliminary.sort_values(by=[keys2[-1], keys2[0]], ascending=[True, False]) # Sorts the top five rows by: 1) Low variance first; 2) most important feature second (descending order) for overlapping predictions
 toPerform = df_sorted2.iloc[0] # First row is the selected reaction
-
 
 
 
@@ -139,10 +134,10 @@ Save files
 '''
 
 
-feat_imp.to_csv('output_files/feature_importances.txt', sep= '\t')
-best_params.to_csv('output_files/best_parameters.txt', sep= '\t')
-toPerform.to_csv('output_files/selected_reaction.txt', sep = '\t')
-df_sorted.to_csv('output_files/predictions.txt', sep = '\t')
+feat_imp.to_csv('output_files/feature_importances.txt', sep= ',')
+best_params.to_csv('output_files/best_parameters.txt', sep= ',', index=False)
+toPerform.to_csv('output_files/selected_reaction.txt', sep = ',')
+df_sorted.to_csv('output_files/predictions.txt', sep = ',')
 filename3 = 'output_files/random_forest_model_grid.sav'
 dump(grid, os.path.join(filename3))
 
@@ -154,5 +149,3 @@ print('You are all set! Have a good one, mate!')
 '''
 After performing the reaction simply edit the train_data.txt file with the reaction conditions used and target value, before running the script again. Enjoy and happy chemistry :)
 '''
-
-import IPython; IPython.embed(); exit(1)
