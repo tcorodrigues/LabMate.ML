@@ -33,23 +33,23 @@ if not os.path.exists(output_dir):
 print('Welcome! Let me work out what is the best experiment for you to run...')
 
 '''
-The training data should be a tab separated file named. 
-The first column of the file is the reaction identifier and the last column is the objective variable (target). 
-The columns in between correspond to descriptors. 
+The training data should be a tab separated file named.
+The first column of the file is the reaction identifier and the last column is the objective variable (target).
+The columns in between correspond to descriptors.
 Otherwise please change accordingly.
 See example files
 '''
 
-train = pd.read_csv(os.path.join(args.init_dir, args.train_file), sep='\t')
+train = pd.read_csv(os.path.join(args.init_dir, args.train_file), sep=',')
 array = train.values
-X = array[:, 1:-1]
+X = array[:, :-1]
 Y = array[:, -1]
 
 '''
 General settings below. These do not need to be changed.
-The seed value is what makes the whole process deterministic. 
+The seed value is what makes the whole process deterministic.
 You may choose to change this number.
-The possible number of estimators, max_features and max_depth is a good compromise, but may need to be adapted, 
+The possible number of estimators, max_features and max_depth is a good compromise, but may need to be adapted,
 if the number of features (columns) is very different.
 '''
 
@@ -75,33 +75,29 @@ print('... done! It is going to be lightspeed from here on out! :)')
 
 '''
 This section loads all possible reactions (search space) and deletes all previously executed reactions from that file.
-The file has the same format as the training data, but no "Target" column. 
+The file has the same format as the training data, but no "Target" column.
 Please check example file.
 '''
 
-df_all_combos = pd.read_csv(os.path.join(args.init_dir, args.combos_file), sep='\t')
-df_train_corrected = train.iloc[:, :-1]
-unseen = pd.concat([df_all_combos, df_train_corrected]).drop_duplicates(keep=False)
-array2 = unseen.values
-X2 = array2[:, 1:]
-df_all_combos2 = df_all_combos.iloc[:, 1:]
+df_all_combos = pd.read_csv(os.path.join(args.init_dir, args.combos_file), sep=',')
+unseen = pd.concat([df_all_combos, train.iloc[:, :-1]]).drop_duplicates(keep=False)
+X2 = unseen.values
 
 '''
-LabMate.AI predicts the future in this section. 
+LabMate.AI predicts the future in this section.
 It builds the model using the best hyperparameter set and predicts the reaction yield (numeric value) for each instance.
 For your reference, the method creates a file with the feature importances
 '''
 
 model2 = grid.best_estimator_  # extracts best estimator (equivalent to setting params), seed is conserved.
-RF_fit = model2.fit(X, Y)
 predictions = model2.predict(X2)
 predictions_df = pd.DataFrame(data=predictions, columns=['Prediction'])
-feat_imp = pd.DataFrame(model2.feature_importances_, index=list(df_all_combos2.columns.values),
+feat_imp = pd.DataFrame(model2.feature_importances_, index=list(df_all_combos.columns.values),
                         columns=['Feature_importances'])
 feat_imp = feat_imp.sort_values(by=['Feature_importances'], ascending=False)
 
 '''
-LabMate.AI calculates variances for the predictions, which allows prioritizing the next best experiment, and 
+LabMate.AI calculates variances for the predictions, which allows prioritizing the next best experiment, and
 creates a table with all the generated information.
 '''
 
@@ -109,7 +105,7 @@ variance = np.var([e.predict(X2) for e in model2.estimators_], axis=0)
 variance_df = pd.DataFrame(data=variance, columns=['Variance'])
 
 assert len(variance) == len(predictions)  # control line
-initial_data = pd.DataFrame(data=array2, columns=list(unseen.columns.values))
+initial_data = pd.DataFrame(data=X2, columns=list(unseen.columns.values))
 df = pd.concat([initial_data, predictions_df, variance_df], axis=1)
 
 '''
@@ -119,8 +115,8 @@ LabMate.AI now selects the next reaction to be performed.
 feat_imp_T = feat_imp.transpose()  # creates a table with a single row stating the importance (0-1 scale) of each variable
 keys1 = list(feat_imp_T.keys())  # collects the names of the features
 keys2 = list(feat_imp_T.keys())  # same as above
-keys1.insert(7, 'Prediction')  # Inserts "Prediction" in position 7 of the previously generated list
-keys2.insert(7, 'Variance')  # Inserts "Variance" in position 7 of the previously generated list
+keys1.append('Prediction')  # Inserts "Prediction" in the end of previously generated list
+keys2.append('Variance')  # Inserts "Variance" in the end of the previously generated list
 
 df_sorted = df.sort_values(by=[keys1[-1], keys1[0]], ascending=[False,
                                                                 False])  # Fetches the table with the predictions and variance and sorts: 1) high prediction first; 2) most important feature second (descending order) for overlapping predictions
@@ -133,16 +129,20 @@ toPerform = df_sorted2.iloc[0]  # First row is the selected reaction
 Save files
 '''
 
-feat_imp.to_csv(os.path.join(output_dir, 'feature_importances.txt'), sep='\t')
-best_params.to_csv(os.path.join(output_dir, 'best_parameters.txt'), sep='\t')
-toPerform.to_csv(os.path.join(output_dir, 'selected_reaction.txt'), sep='\t')
-df_sorted.to_csv(os.path.join(output_dir, 'predictions.txt'), sep='\t')
+feat_imp.to_csv(os.path.join(output_dir, 'feature_importances.txt'), sep=',')
+best_params.to_csv(os.path.join(output_dir, 'best_parameters.txt'), sep=',', index=False)
+toPerform.to_csv(os.path.join(output_dir, 'selected_reaction.txt'), sep=',')
+with open(os.path.join(output_dir, 'selected_reaction.txt'), 'r') as fin:
+    data = fin.read().splitlines(True)
+with open(os.path.join(output_dir, 'selected_reaction.txt'), 'w') as fout:
+    fout.writelines(data[1:])
+df_sorted.to_csv(os.path.join(output_dir, 'predictions.txt'), sep=',', index=False)
 filename3 = os.path.join(output_dir, 'random_forest_model_grid.sav')
 dump(grid, os.path.join(filename3))
 
 print('You are all set! Have a good one, mate!')
 
-'''
-After performing the reaction simply edit the training data file with the reaction conditions used and target value, 
+print('''
+After performing the reaction simply edit the training data file with the reaction conditions used and target value,
 before running the script again. Enjoy and happy chemistry :)
-'''
+''')
