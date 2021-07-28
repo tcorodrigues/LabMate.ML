@@ -33,23 +33,23 @@ if not os.path.exists(output_dir):
 print('Welcome! Let me work out what is the best experiment for you to run...')
 
 '''
-The training data should be a tab separated file named. 
-The first column of the file is the reaction identifier and the last column is the objective variable (target). 
-The columns in between correspond to descriptors. 
+The training data should be a tab separated file named.
+The first column of the file is the reaction identifier and the last column is the objective variable (target).
+The columns in between correspond to descriptors.
 Otherwise please change accordingly.
 See example files
 '''
 
-train = pd.read_csv(os.path.join(args.init_dir, args.train_file), sep='\t')
+train = pd.read_csv(os.path.join(args.init_dir, args.train_file), sep=',')
 array = train.values
 X = array[:, 1:-1]
 Y = array[:, -1]
 
 '''
 General settings below. These do not need to be changed.
-The seed value is what makes the whole process deterministic. 
+The seed value is what makes the whole process deterministic.
 You may choose to change this number.
-The possible number of estimators, max_features and max_depth is a good compromise, but may need to be adapted, 
+The possible number of estimators, max_features and max_depth is a good compromise, but may need to be adapted,
 if the number of features (columns) is very different.
 '''
 
@@ -75,11 +75,11 @@ print('... done! It is going to be lightspeed from here on out! :)')
 
 '''
 This section loads all possible reactions (search space) and deletes all previously executed reactions from that file.
-The file has the same format as the training data, but no "Target" column. 
+The file has the same format as the training data, but no "Target" column.
 Please check example file.
 '''
 
-df_all_combos = pd.read_csv(os.path.join(args.init_dir, args.combos_file), sep='\t')
+df_all_combos = pd.read_csv(os.path.join(args.init_dir, args.combos_file), sep=',')
 df_train_corrected = train.iloc[:, :-1]
 unseen = pd.concat([df_all_combos, df_train_corrected]).drop_duplicates(keep=False)
 array2 = unseen.values
@@ -87,7 +87,7 @@ X2 = array2[:, 1:]
 df_all_combos2 = df_all_combos.iloc[:, 1:]
 
 '''
-LabMate.AI predicts the future in this section. 
+LabMate.AI predicts the future in this section.
 It builds the model using the best hyperparameter set and predicts the reaction yield (numeric value) for each instance.
 For your reference, the method creates a file with the feature importances
 '''
@@ -101,7 +101,7 @@ feat_imp = pd.DataFrame(model2.feature_importances_, index=list(df_all_combos2.c
 feat_imp = feat_imp.sort_values(by=['Feature_importances'], ascending=False)
 
 '''
-LabMate.AI calculates variances for the predictions, which allows prioritizing the next best experiment, and 
+LabMate.AI calculates variances for the predictions, which allows prioritizing the next best experiment, and
 creates a table with all the generated information.
 '''
 
@@ -133,16 +133,16 @@ toPerform = df_sorted2.iloc[0]  # First row is the selected reaction
 Save files
 '''
 
-feat_imp.to_csv(os.path.join(output_dir, 'feature_importances.txt'), sep='\t')
-best_params.to_csv(os.path.join(output_dir, 'best_parameters.txt'), sep='\t')
-toPerform.to_csv(os.path.join(output_dir, 'selected_reaction.txt'), sep='\t')
-df_sorted.to_csv(os.path.join(output_dir, 'predictions.txt'), sep='\t')
+feat_imp.to_csv(os.path.join(output_dir, 'feature_importances.txt'), sep=',')
+best_params.to_csv(os.path.join(output_dir, 'best_parameters.txt'), sep=',')
+toPerform.to_csv(os.path.join(output_dir, 'selected_reaction.txt'), sep=',')
+df_sorted.to_csv(os.path.join(output_dir, 'predictions.txt'), sep=',')
 filename3 = os.path.join(output_dir, 'random_forest_model_grid.sav')
 dump(grid, os.path.join(filename3))
 
 print('You are all set! Have a good one, mate!')
 
 '''
-After performing the reaction simply edit the training data file with the reaction conditions used and target value, 
+After performing the reaction simply edit the training data file with the reaction conditions used and target value,
 before running the script again. Enjoy and happy chemistry :)
 '''
