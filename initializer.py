@@ -30,5 +30,5 @@ with open(args.boundary, 'r') as f:
 df = pd.DataFrame(data=product(*boundaries.values()), columns=boundaries.keys())
 df_random_data = df.sample(n=args.n_samples, random_state=args.seed)
 
-df.to_csv(os.path.join(init_files_dir, 'all_combos.txt'), sep=',')
-df_random_data.to_csv(os.path.join(init_files_dir, 'train_data.txt'), sep=',')
+df.to_csv(os.path.join(init_files_dir, 'all_combos.txt'), sep=',', index=False)
+df_random_data.to_csv(os.path.join(init_files_dir, 'train_data.txt'), sep=',', index=False)
