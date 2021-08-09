@@ -23,7 +23,7 @@ parser.add_argument('-s', '--seed', type=int, action='store', default=1, help='R
 parser.add_argument('-m', '--metric', type=str, action='store', default='neg_mean_absolute_error', help='Metric for evaluatng hyperparameters.')
 parser.add_argument('-c', '--combos_file', type=str, action='store', default='all_combos.txt', help='File containing all reaction combinations.')
 parser.add_argument('-j', '--jobs', type=int, action='store', default=6, help='Number of parallel jobs when optimising hyperparameters.')
-parser.add_argument('-g', '--grid', type=str, action='store', default='grid', help='Grid methods for tuning ther hyperparameters.')
+parser.add_argument('-g', '--grid', type=str, action='store', default='grid', help='Grid methods for tuning the hyperparameters.')
 args = parser.parse_args()
 
 
