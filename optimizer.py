@@ -153,13 +153,11 @@ Save files
 feat_imp.to_csv(os.path.join(output_dir, 'feature_importances.txt'), sep=',')
 best_params.to_csv(os.path.join(output_dir, 'best_parameters.txt'), sep=',', index=False)
 toPerform.to_csv(os.path.join(output_dir, 'selected_reaction.txt'), sep=',')
-#toPerform.to_csv(os.path.join(output_dir, 'selected_reaction.txt'), sep=',')
 with open(os.path.join(output_dir, 'selected_reaction.txt'), 'r') as fin:
     data = fin.read().splitlines(True)
 with open(os.path.join(output_dir, 'selected_reaction.txt'), 'w') as fout:
     fout.writelines(data[1:])
 toPerform[:-2].to_frame().transpose().to_csv(os.path.join(args.init_dir, 'train_data.txt'), mode='a', header=False, index=False)
-
 df_sorted.to_csv(os.path.join(output_dir, 'predictions.txt'), sep=',', index=False)
 filename3 = os.path.join(output_dir, 'random_forest_model_grid.sav')
 dump(grid, os.path.join(filename3))
