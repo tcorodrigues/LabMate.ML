@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from joblib import dump
 
 
@@ -23,6 +23,7 @@ parser.add_argument('-s', '--seed', type=int, action='store', default=1, help='R
 parser.add_argument('-m', '--metric', type=str, action='store', default='neg_mean_absolute_error', help='Metric for evaluatng hyperparameters.')
 parser.add_argument('-c', '--combos_file', type=str, action='store', default='all_combos.txt', help='File containing all reaction combinations.')
 parser.add_argument('-j', '--jobs', type=int, action='store', default=6, help='Number of parallel jobs when optimising hyperparameters.')
+parser.add_argument('-g', '--grid', type=str, action='store', default='grid', help='Grid methods for tuning ther hyperparameters.')
 args = parser.parse_args()
 
 
@@ -56,22 +57,42 @@ if the number of features (columns) is very different.
 seed = args.seed
 kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
 model = RandomForestRegressor(random_state=seed)
-estimators_int = list(range(100, 1050, 50))
-param_grid = {'n_estimators': estimators_int, 'max_features': ('auto', 'sqrt'), 'max_depth': [None, 2, 4]}
+#estimators_int = list(range(100, 1050, 50))
+#param_grid = {'n_estimators': estimators_int, 'max_features': ('auto', 'sqrt'), 'max_depth': [None, 2, 4]}
 
 print('All good till now. I am figuring out the best method to analyze your data. Bear with me...')
+print('Looking for the best method by ' + args.grid + ' search...' )
 
 '''
 This section makes LabMate.AI search for the best hyperparameters autonomously.
 It will also save a file with the best score and store the ideal hyperparameters for future use.
 '''
 
-grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=args.metric, cv=kfold, n_jobs=args.jobs)
+#Grid search and its parameters gird set preparation
+if args.grid == 'grid':
+    estimators_int = list(range(100, 1050, 50))
+    param_grid = {'n_estimators': estimators_int, 'max_features': ('auto', 'sqrt'), 'max_depth': [None, 2, 4]}
+    grid = GridSearchCV(estimator=model, param_grid=param_grid, scoring=args.metric, cv=kfold, n_jobs=args.jobs)
+
+#Random search and its parameters grid set preparation
+elif args.grid == 'random':
+    param_grid = {'bootstrap': [True, False],
+                  'max_features': ['auto', 'sqrt', 'log2'],
+                  'max_depth': [2,3,4,5,6,7,8,9,10],
+                  'n_estimators': list(range(10, 201, 5))}
+
+    grid = RandomizedSearchCV(estimator=model, param_distributions=param_grid, scoring=args.metric, n_iter=20, cv=kfold, n_jobs=args.jobs)
+
+
+#start grid/radom search tuning
 grid_result = grid.fit(X, Y)
 np.savetxt(os.path.join(output_dir, 'best_score.txt'), ["best_score: %s" % grid.best_score_], fmt='%s')
 best_params = pd.DataFrame([grid.best_params_], columns=grid.best_params_.keys())
 
+
 print('... done! It is going to be lightspeed from here on out! :)')
+
+
 
 '''
 This section loads all possible reactions (search space) and deletes all previously executed reactions from that file.
